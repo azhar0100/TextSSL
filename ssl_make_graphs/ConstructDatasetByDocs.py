@@ -3,7 +3,7 @@ import networkx as nx
 import numpy as np
 from scipy import sparse
 import torch, sys
-Your_path = '/data/project/yinhuapark/ssl/'
+Your_path = '/code'
 sys.path.append(Your_path+'ssl_make_graphs')
 sys.path.append(Your_path+'ssl_graphmodels')
 from PairData import PairData

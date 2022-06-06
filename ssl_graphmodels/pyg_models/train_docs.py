@@ -1,6 +1,6 @@
 import sys, os
 
-Your_path = '/data/project/yinhuapark/ssl/'
+Your_path = '/code'
 sys.path.append(Your_path+'ssl_graphmodels')
 import random
 from config.conf import arg_config

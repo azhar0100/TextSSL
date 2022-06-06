@@ -2,7 +2,7 @@ from torch_geometric.data import InMemoryDataset
 import os, sys
 import os.path as osp
 import torch
-Your_path = '/data/project/yinhuapark/ssl/'
+Your_path = '/code'
 sys.path.append(Your_path+'ssl_make_graphs')
 
 
