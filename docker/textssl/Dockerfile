@@ -3,6 +3,11 @@ LABEL maintainer="Azhar"
 LABEL repository="textssl"
 
 ENV DEBIAN_FRONTEND noninteractive
+COPY ./cuda-keyring_1.0-1_all.deb cuda-keyring_1.0-1_all.deb
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
 RUN apt update && \
     apt install -y bash \
                    build-essential \
@@ -35,8 +40,8 @@ RUN python3 -m pip install --no-cache-dir automodinit==0.16\
 RUN apt-get update && apt-get install -y zip ipython3 poppler-utils nano
 RUN python3 -m pip install --no-cache-dir --find-links https://download.pytorch.org/whl/torch_stable.html \
                             torch==1.9.0+cu111\
-                            torchvision==0.9.1+cu111
-RUN python3 -m pip install --no-cahce-dir gensim==4.2.0\
+                            torchvision>=0.9.1+cu111
+RUN python3 -m pip install --no-cache-dir gensim==4.2.0\
                         networkx==2.5 \
                         nltk==3.6.1 \
                         numpy==1.20.1 \
