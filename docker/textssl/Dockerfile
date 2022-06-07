@@ -1,4 +1,4 @@
-FROM  nvidia/cuda:11.1-base
+FROM  nvidia/cuda:11.1-devel-ubuntu20.04
 LABEL maintainer="Azhar"
 LABEL repository="textssl"
 
