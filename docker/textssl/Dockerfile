@@ -49,4 +49,10 @@ RUN python3 -m pip install --no-cache-dir gensim==4.2.0\
                         scikit_learn==1.1.1 \
                         scipy==1.6.2\
                         autopep8 joblib
+RUN export TORCH=1.9.0 && \
+    export CUDA=cu111 && \
+    pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
+    pip install torch-sparse==0.6.12 -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
+    pip install torch-geometric
+
 COPY ./inputrc /etc/inputrc                           
