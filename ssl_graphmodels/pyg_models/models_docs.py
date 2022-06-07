@@ -1,5 +1,5 @@
 import sys
-Your_path = '/code'
+Your_path = '/code/'
 sys.path.append(Your_path+'ssl_graphmodels')
 import torch
 from layers_docs import READOUTLayer, DENSELayer, GRAPHLayer

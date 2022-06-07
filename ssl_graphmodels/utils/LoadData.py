@@ -1,5 +1,5 @@
 import sys, os
-Your_path = '/code'
+Your_path = '/code/'
 sys.path.append(Your_path+'ssl_make_graphs')
 from PygDocsGraphDataset import PygDocsGraphDataset as PDGD
 from torch_geometric.data import DataLoader
