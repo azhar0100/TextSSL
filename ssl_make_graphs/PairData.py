@@ -14,7 +14,7 @@ class PairData(Data):
         self.y_p = y_p
         self.edge_attr_p = edge_attr_p
 
-    def __inc__(self, key, value):
+    def __inc__(self, key, value, *args, **kwargs):
 
         if key == 'edge_index_n':
             return self.x_n.size(0)
