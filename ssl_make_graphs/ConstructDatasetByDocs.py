@@ -1,3 +1,4 @@
+from typing import Dict, Sequence, Tuple
 import pandas as pd
 import networkx as nx
 import numpy as np
@@ -22,21 +23,50 @@ def combine_same_word_pair(df, col_name):
     return dfs
 
 
-def graph_to_torch_sparse_tensor(G_true, edge_attr=None, node_attr=None):
+def graph_to_torch_sparse_tensor(G_true:nx.Graph, edge_attr:str=None, node_attr:Sequence[str]=None) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Converts the networx graph into a torch sparse tensor
+
+    Args:
+        G_true (nx.Graph): The original networkx graph.
+        edge_attr (str, optional): _description_. If given, edge_attrs will be a torch Tensor containing N x edge_number elements). Defaults to None.
+        node_attr (Sequence[str], optional: If given, it should be a list containing one of 'paragraph_id' or 'batch_id'. Nothing else. Repeated values would lead to bugs. Defaults to None.
+
+    Returns:
+        Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]: edge_index, edge_attrs, x, batch_n, pos_n
+                                    edge_index: PyG style edge index. Shape is 2 x edge_number. Every tuple of nodes is connected.
+                                    edge_attrs: torch Tensor, of shape N x (dimension of given edge attr). Only if edge_attr is not None
+                                    x: torch.Tensor. Of shape N x (node embedding dimension)
+                                    batch_n: A one dimensional torch tensor, returned if 'paragraph_id' is in node_attr, and contains the same value
+                                    pos_n: A one dimensional torch tensor, returned if 'node_pos' is in node_attr, and contains the same_value
+    """    
 
     G = nx.convert_node_labels_to_integers(G_true, label_attribute='word_name')
+    # Gives every node in G an integer label.
+    # The old name is stored in word_name.
+    # G_true contains nodes via word_name
+
     A_G = np.array(nx.adjacency_matrix(G).todense())
+
+
     sparse_mx = sparse.csr_matrix(A_G).tocoo()
     """Convert a scipy sparse matrix to a torch sparse tensor."""
     sparse_mx = sparse_mx.tocoo().astype(np.float32)
+    # sparse_mx contains a row array, and a col array and a data array
+    # such that in the adjacency matrix A_G[row[i]][col[i]] = data[i]
+    # Every other element is defined to be zero, unless explicitly set
+    # to something else other than zero.
+    
 
     edge_attrs = []
     if edge_attr != None:
         for i in range(sparse_mx.row.shape[0]):
             edge_attrs.append(G.edges[sparse_mx.row[i], sparse_mx.col[i]][edge_attr])
+            # networx allows graph edges to be accessed as G.edges[u,v], where u and v are node indices
 
     edge_index = torch.from_numpy(
         np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.long))
+    # Most likely a PyG matrix, containing edges in the form 2 x N_e
+
     edge_attrs = torch.from_numpy(np.array(edge_attrs)).to(torch.float32)
     x = []
     batch_n = []
@@ -51,7 +81,7 @@ def graph_to_torch_sparse_tensor(G_true, edge_attr=None, node_attr=None):
                 elif attr == 'node_pos':
                     pos_n.append(G.nodes[node][attr])
                 else:
-                    print('sth wrong with edge attribute')
+                    print('sth wrong with node attribute')
     x = np.array(x)
     if len(x.shape) != 2:
         print(x.shape)
@@ -63,7 +93,19 @@ def graph_to_torch_sparse_tensor(G_true, edge_attr=None, node_attr=None):
 
 
 
-def set_word_id_to_node(G, dictionary, node_emb, word_embeddings):
+def set_word_id_to_node(G:nx.Graph, dictionary:Sequence[str], node_emb:str, word_embeddings:Dict[str,Sequence[float]]) -> nx.Graph:
+    """Turns a graph of words into a graph of word embeddings.
+
+    Args:
+        G (nx.Graph): Original graph of words.
+        dictionary (Sequence[str]): A list of allowed words to be used. Any word in the graph outside this sequence would cause an AssertionError
+        node_emb (str): The key against which the word embedding will be stored inside the networkx graph G.
+        word_embeddings (Dict[str,Sequence[float]]): A dictionary from word to corresponding word embeddings. Random embedding will be assigned to each word
+                                                    without an embedding.
+
+    Returns:
+        nx.Graph: The original graph, which would now contain word embeddings for each word in the node_attr, node_emb
+    """    
     for node in G:
         if node in dictionary:
             ind = np.array([dictionary.index(node)])

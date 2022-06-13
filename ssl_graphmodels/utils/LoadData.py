@@ -77,8 +77,8 @@ class LoadDocsData():
         self.val_set = []
         self.test_set = []
         self.dic_path = '{}_vocab.txt'.format(name)
-
-        self.dictionary = open(os.path.join(Your_path+'re-extract_data/DATA_RAW', name, self.dic_path)).read().split()
+        with open(os.path.join(Your_path+'re-extract_data/DATA_RAW', name, self.dic_path)) as f:
+            self.dictionary = f.read().split()
 
     class Handle_data(object):
         def __init__(self, type, pretrained):
