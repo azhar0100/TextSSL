@@ -19,11 +19,7 @@ RUN apt update && \
                    tesseract-ocr && \
     rm -rf /var/lib/apt/lists
 
-RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir \
-    mkl \
-    gradio
-
+RUN python3 -m pip install --no-cache-dir --upgrade pip
 RUN python3 -m pip install --no-cache-dir automodinit==0.16\
                         bidict==0.21.4\
                         GitPython==3.1.24\
