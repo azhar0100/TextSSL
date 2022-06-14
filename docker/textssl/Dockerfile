@@ -50,5 +50,6 @@ RUN export TORCH=1.9.0 && \
     pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
     pip install torch-sparse==0.6.12 -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
     pip install torch-geometric
-
+RUN python3 -c 'import nltk; nltk.download("punkt")'
+RUN curl 'http://nlp.stanford.edu/data/glove.6B.zip'
 COPY ./inputrc /etc/inputrc                           

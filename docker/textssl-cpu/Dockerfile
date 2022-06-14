@@ -1,6 +1,8 @@
 FROM  ubuntu:20.04
 LABEL maintainer="Azhar"
 LABEL repository="textssl"
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Karachi
 RUN apt update && \
     apt install -y bash \
                    build-essential \
@@ -43,5 +45,6 @@ RUN export TORCH=1.9.0 && \
     pip install torch-scatter -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
     pip install torch-sparse==0.6.12 -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html && \
     pip install torch-geometric
-
+RUN python3 -c 'import nltk; nltk.download("punkt")'
+RUN curl 'http://nlp.stanford.edu/data/glove.6B.zip'
 COPY ./inputrc /etc/inputrc                           
