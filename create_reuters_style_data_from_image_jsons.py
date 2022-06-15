@@ -76,6 +76,7 @@ if __name__ == '__main__':
         pkl_data = pickle.load(f)
 
     for data_item in tqdm(pkl_data):
+
         
         # Gather all the text, the 'sentences' in block_texts
         block_nums = list(set(data_item['block']))
@@ -89,9 +90,11 @@ if __name__ == '__main__':
         
         final_text = '\n'.join(block_texts)
 
+        doctype = data_item['doc_type']
         # Find the ouput filename
         filename = Path(data_item['image_path'])
         output_name = filename.stem + '.txt'
-        output_path = output_folder / output_name
+        output_path = output_folder / doctype / output_name
+        output_path.parent.mkdir(exist_ok=True, parents=True )
         with open(output_path, 'w') as f:
             f.write(final_text)
