@@ -85,8 +85,6 @@ if __name__ == '__main__':
 
     if args.name == 'R52':
         assert len(labels) == 52
-    else:
-        assert len(labels) == 8
 
     samples = filter_samples(args.source_path)
     print('moving training samples...')
