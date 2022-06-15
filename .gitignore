@@ -4,3 +4,4 @@ Reuters21578-Apte-115Cat.tar.gz
 glove.6B.300d.txt
 **/DATA_RAW/
 **/DATA_PRE/
+*.pkl
