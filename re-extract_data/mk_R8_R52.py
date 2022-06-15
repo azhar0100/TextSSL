@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 pd.set_option('display.max_columns', 1000)
 pd.set_option('display.max_rows', 1000)
@@ -12,9 +13,17 @@ using filtering methods in https://ana.cachopo.org/datasets-for-single-label-tex
 by eliminating document with less than one or with more than one topic in file "Reuters21578-Apte-115Cat".
 '''
 
+def filter_samples(path:str) -> List[str]:
+    """Returns a list containing files that only appear once, in either train or test set
 
+    Args:
+        path (str): The path in which folders 'train' and 'test' are expected, which are directories
+                expected to contain folders pertaining to each class. This returns only the files
+                that are found only once in the whole tree.
 
-def filter_samples(path):
+    Returns:
+        List[str]: Only the files that are found only once in the whole tree.
+    """    
     s = {}
     for split in ['train', 'test']:
         for cla in os.listdir(os.path.join(path, split)):
