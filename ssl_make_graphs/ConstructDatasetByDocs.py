@@ -152,7 +152,11 @@ class ConstructDatasetByDocs():
             for patient in tqdm(patients, desc='Iterating over patients in {}_{}_cooc'.format(y, self.split)):
                 p_df = pd.read_csv(osp.join(cooc_path, y, patient), sep='\t', header=0)
                 G_p = self.generate_doc_graph(p_df)
-                G_p = set_word_id_to_node(G_p, self.dictionary, node_emb='node_emb', word_embeddings=self.word_embeddings)
+                try:
+                    G_p = set_word_id_to_node(G_p, self.dictionary, node_emb='node_emb', word_embeddings=self.word_embeddings)
+                except AssertionError as e:
+                    print(f"Error is in {osp.join(cooc_path, y, patient)}")
+                    raise e
                 edge_index_p, edge_attrs_p, x_p, _, _ = graph_to_torch_sparse_tensor(G_p, edge_attr='edge_attr')
                 y_p = torch.from_numpy(np.array([y_id])).to(torch.long)
 
