@@ -7,3 +7,4 @@ glove.6B.300d.txt
 *.pkl
 EnglishData/
 english_data_clean/
+DATA_PRE_OLD/

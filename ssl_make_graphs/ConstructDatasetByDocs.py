@@ -114,6 +114,7 @@ def set_word_id_to_node(G:nx.Graph, dictionary:Sequence[str], node_emb:str, word
             G.nodes[node][node_emb] = emb
         else:
             print('no!!')
+            print(f"Node is {node}")
             assert node in dictionary
     return G
 

@@ -44,7 +44,7 @@ def processing_dataset(dataset, raw_path):
     dataset= 20ng, ohsumed, R8, R52
     :return:
     '''
-    vocab = open(os.path.join(raw_path, dataset, '{}_vocab.txt'.format(dataset))).read().split('\n')
+    vocab = set(open(os.path.join(raw_path, dataset, '{}_vocab.txt'.format(dataset))).read().split('\n'))
 
     for split in ['train', 'test']:
         for y in os.listdir(os.path.join(raw_path, dataset, split)):
