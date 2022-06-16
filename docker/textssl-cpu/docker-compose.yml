@@ -3,6 +3,8 @@ services:
   main:
     build: .
     tty: true
+    ports:
+      - 34124:5678
     volumes:
       - ../../:/code
       - root-cache:/root/
