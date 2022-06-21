@@ -72,7 +72,7 @@ def train_main(train_loader, val_loader, test_loader, patience):
             train_loss = train(train_loader, training=True)
             val_loss = train(val_loader, training=False)
             val_results, val_labels, val_preds = test(val_loader)
-            val_classification_report = classification_report(val_labels, val_preds,output_dict=True)
+            val_classification_report = classification_report(val_labels, np.argmax(val_preds,axis=1),output_dict=True)
             if val_results >= max_val_acc:
                 step = 0
                 test_results, labels, preds = test(test_loader)
@@ -81,7 +81,7 @@ def train_main(train_loader, val_loader, test_loader, patience):
                 best_epoch = epoch
                 best_test_results = test_results
                 best_preds = preds
-                test_classification_report = classification_report(labels, preds, return_dict=True)
+                test_classification_report = classification_report(labels, np.argmax(preds,axis=1), return_dict=True)
             elif val_results < max_val_acc:
                 step += 1
             if step > patience and patience != -1:
