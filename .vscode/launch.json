@@ -19,6 +19,22 @@
                 }
             ],
             "justMyCode": true
+        },
+        {
+            "name": "Python: Remote Attach gpu",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "10.241.88.154",
+                "port": 23143
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ],
+            "justMyCode": true
         }
     ]
 }
