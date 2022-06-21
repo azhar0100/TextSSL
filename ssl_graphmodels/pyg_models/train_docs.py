@@ -1,5 +1,7 @@
 import sys, os
 
+import yaml
+
 Your_path = '/code/'
 sys.path.append(Your_path+'ssl_graphmodels')
 import random
@@ -10,6 +12,7 @@ import torch
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from sklearn.metrics import classification_report
 use_gpu = torch.cuda.is_available()
 
 
@@ -68,7 +71,8 @@ def train_main(train_loader, val_loader, test_loader, patience):
             t.set_description(desc='train and validate')
             train_loss = train(train_loader, training=True)
             val_loss = train(val_loader, training=False)
-            val_results, _, _ = test(val_loader)
+            val_results, val_labels, val_preds = test(val_loader)
+            val_classification_report = classification_report(val_labels, val_preds,output_dict=True)
             if val_results >= max_val_acc:
                 step = 0
                 test_results, labels, preds = test(test_loader)
@@ -77,12 +81,13 @@ def train_main(train_loader, val_loader, test_loader, patience):
                 best_epoch = epoch
                 best_test_results = test_results
                 best_preds = preds
+                test_classification_report = classification_report(labels, preds, return_dict=True)
             elif val_results < max_val_acc:
                 step += 1
             if step > patience and patience != -1:
                 break
 
-            all_results.append([epoch, train_loss, val_loss, val_results, test_results])
+            all_results.append([epoch, train_loss, val_loss, val_results, test_results, val_classification_report, test_classification_report])
             t.set_postfix_str('val_loss={:^7.3f};val_acc={:^7.3f};test_acc={:^7.3f}'.format(val_loss, val_results, test_results))
             t.update()
 
@@ -122,4 +127,7 @@ if __name__ == '__main__':
     multi_crit = torch.nn.CrossEntropyLoss()
 
     best_model, best_epoch, test_results, all_results, best_preds, labels = train_main(train_loader, val_loader, test_loader, params['patience'])
+    print('Writing results to train_results.yml')
+    with open('train_results.yml','w')  as f:
+        yaml.dump(all_results,f)
     # del best_model, best_epoch, test_results, model
