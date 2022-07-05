@@ -1,3 +1,4 @@
+import json
 from typing import Dict, Sequence, Tuple
 import pandas as pd
 import networkx as nx
@@ -145,10 +146,14 @@ class ConstructDatasetByDocs():
         return result_graph
 
     def construct_datalist(self):
+        print("Will save gt list")
         Data_list = []
         cooc_path = osp.join(self.pre_path, self.split+'_cooc')
-        for y_id, y in enumerate(os.listdir(cooc_path)):
-            patients = os.listdir(os.path.join(cooc_path, y))
+        all_ys = sorted([x for x in os.listdir(cooc_path) if os.path.isdir(x)])
+        y_ids_to_y = dict(enumerate(all_ys))
+        gt_list = []
+        for y_id, y in enumerate(all_ys):
+            patients = sorted(os.listdir(os.path.join(cooc_path, y)))
             for patient in tqdm(patients, desc='Iterating over patients in {}_{}_cooc'.format(y, self.split)):
                 p_df = pd.read_csv(osp.join(cooc_path, y, patient), sep='\t', header=0)
                 G_p = self.generate_doc_graph(p_df)
@@ -182,6 +187,14 @@ class ConstructDatasetByDocs():
                 data = PairData(x_n, edge_index_n, y_n, batch_n, pos_n, x_p, edge_index_p, y_p, edge_attrs_p)
                 assert data.x_p.squeeze().max().item() < len(self.dictionary)
                 Data_list.append(data)
+                gt_list.append({
+                    'original_filename' : patient,
+                    'y_id' : y_id,
+                    'y' : y
+                })
+        with open(os.path.join(self.pre_path, self.split+'_gt.json'), 'w') as f:
+            print("Saving to {}".format(os.path.join(self.pre_path, self.split+'_gt.json')))
+            json.dump(gt_list, f)
         return Data_list
 
 if __name__ == '__main__':

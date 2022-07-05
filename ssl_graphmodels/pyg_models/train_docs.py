@@ -117,6 +117,7 @@ if __name__ == '__main__':
     result_dfs = []
     methods = args.methods
     train_loader, val_loader, test_loader, num_class = loader.get_train_test(batch_size=args.batch_size, seed=SEED, tr_split=args.tr_split)
+    # files = 
     params = vars(args)
     params['input_dim'] = 300
     params['output_dim'] = num_class
