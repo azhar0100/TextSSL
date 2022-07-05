@@ -149,10 +149,11 @@ class ConstructDatasetByDocs():
         print("Will save gt list")
         Data_list = []
         cooc_path = osp.join(self.pre_path, self.split+'_cooc')
+        print(f"Looking for cooc in {cooc_path}")
         all_ys = sorted([x for x in os.listdir(cooc_path) if os.path.isdir(x)])
         y_ids_to_y = enumerate(all_ys)
         gt_list = []
-        for y_id, y in all_ys:
+        for y_id, y in y_ids_to_y:
             patients = sorted(os.listdir(os.path.join(cooc_path, y)))
             for patient in tqdm(patients, desc='Iterating over patients in {}_{}_cooc'.format(y, self.split)):
                 p_df = pd.read_csv(osp.join(cooc_path, y, patient), sep='\t', header=0)
