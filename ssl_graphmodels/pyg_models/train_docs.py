@@ -1,7 +1,7 @@
 import sys, os
 
 import yaml
-
+import json
 Your_path = '/code/'
 sys.path.append(Your_path+'ssl_graphmodels')
 import random
@@ -131,4 +131,9 @@ if __name__ == '__main__':
     print('Writing results to train_results.yml')
     with open('train_results.yml','w')  as f:
         yaml.dump(all_results,f)
+    with open('by_file_predictions.json','w') as f:
+        json.dump({
+            'best_preds' : best_preds,
+            'labels' : labels
+        },f) 
     # del best_model, best_epoch, test_results, model
