@@ -150,7 +150,7 @@ class ConstructDatasetByDocs():
         Data_list = []
         cooc_path = osp.join(self.pre_path, self.split+'_cooc')
         print(f"Looking for cooc in {cooc_path}")
-        all_ys = sorted([x for x in os.listdir(cooc_path) if os.path.isdir(x)])
+        all_ys = sorted([x for x in os.listdir(cooc_path) if os.path.isdir(os.path.join(cooc_path,x))])
         y_ids_to_y = enumerate(all_ys)
         gt_list = []
         for y_id, y in y_ids_to_y:
